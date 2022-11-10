@@ -62,7 +62,10 @@ def loader(request):
     loader = mock.Mock(wraps=orig_loader)
 
     if request.param:
-        loader.find_plugin_with_context.side_effect = AttributeError
+        try:
+            loader.find_plugin_with_context.side_effect = AttributeError
+        except AttributeError:
+            pass
         loader.find_plugin_with_name = mock.Mock(wraps=_legacy_sim)
 
     with mock.patch('ansible.plugins.loader.lookup_loader', loader):
