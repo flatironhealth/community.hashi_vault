@@ -2,6 +2,7 @@ name: CI
 on:
   # Run CI against all pushes (direct commits, also merged PRs), Pull Requests
   push:
+    branches: [main]
     paths-ignore:
       - 'docs/**'
       - '.github/workflows/_shared-*'
@@ -31,12 +32,17 @@ jobs:
     name: Sanity (Ⓐ${{ matrix.ansible }})
     runs-on: ${{ matrix.runner }}
     strategy:
+      fail-fast: false
       matrix:
         runner:
           - ubuntu-latest
         test_container:
           - default
         ansible:
+          - stable-2.9
+          - stable-2.10
+          - stable-2.11
+          - stable-2.12
           - stable-2.13
           - stable-2.14
           - stable-2.15
@@ -106,13 +112,17 @@ jobs:
     name: Units (Ⓐ${{ matrix.ansible }})
     strategy:
       # As soon as the first unit test fails, cancel the others to free up the CI queue
-      fail-fast: true
+      fail-fast: false
       matrix:
         runner:
           - ubuntu-latest
         test_container:
           - default
         ansible:
+          - stable-2.9
+          - stable-2.10
+          - stable-2.11
+          - stable-2.12
           - stable-2.13
           - stable-2.14
           - stable-2.15
@@ -187,6 +197,10 @@ jobs:
         test_container:
           - default
         ansible:
+          - stable-2.9
+          - stable-2.10
+          - stable-2.11
+          - stable-2.12
           - stable-2.13
           - stable-2.14
           - stable-2.15
@@ -201,6 +215,22 @@ jobs:
         exclude:
           # https://docs.ansible.com/ansible/devel/installation_guide/intro_installation.html#control-node-requirements
           # https://docs.ansible.com/ansible/devel/reference_appendices/release_and_maintenance.html#ansible-core-support-matrix
+          - ansible: 'stable-2.9'
+            python: '3.10'
+          - ansible: 'stable-2.9'
+            python: '3.9'
+          - ansible: 'stable-2.9'
+            python: '3.11'          
+          - ansible: 'stable-2.10'
+            python: '3.10'
+          - ansible: 'stable-2.10'
+            python: '3.11'            
+          - ansible: 'stable-2.11'
+            python: '3.10'
+          - ansible: 'stable-2.11'
+            python: '3.11'
+          - ansible: 'stable-2.12'
+            python: '3.11'
           - ansible: 'stable-2.13'
             python: '3.11'
           - ansible: 'stable-2.15'
@@ -300,6 +330,7 @@ jobs:
           retention-days: 1
 
   local_test_invocation:
+    if: false
     runs-on: ${{ matrix.runner }}
     name: LI - ${{ matrix.runner }} (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
     strategy:
@@ -413,7 +444,7 @@ jobs:
       - local_test_invocation
     # don't upload coverage on scheduled runs
     # https://github.com/ansible-collections/community.hashi_vault/issues/180
-    if: ${{ github.event_name != 'schedule' }}
+    if: false
     name: Upload Codecov reports
     runs-on: ubuntu-latest
     steps:
