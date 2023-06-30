@@ -118,7 +118,8 @@ jobs:
           - ubuntu-latest
         test_container:
           - default
-        python: # only used for pre-ansible 2.12
+        python:
+          # only used for pre-ansible 2.12
           - '3.6'
           - '3.7'
           - '3.8'
@@ -129,14 +130,24 @@ jobs:
         include:
           - ansible: stable-2.12
             python: ''
+            runner: ubuntu-latest
+            test_container: default
           - ansible: stable-2.13
             python: ''
+            runner: ubuntu-latest
+            test_container: default
           - ansible: stable-2.14
             python: ''
+            runner: ubuntu-latest
+            test_container: default
           - ansible: stable-2.15
             python: ''
+            runner: ubuntu-latest
+            test_container: default
           - ansible: devel
             python: ''
+            runner: ubuntu-latest
+            test_container: default
 
     steps:
       - name: Initialize env vars
