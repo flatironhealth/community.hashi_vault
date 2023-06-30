@@ -109,7 +109,7 @@ jobs:
 
   units:
     runs-on: ${{ matrix.runner }}
-    name: Units (Ⓐ${{ matrix.ansible }})
+    name: Units (Ⓐ${{ matrix.ansible }}-py${{ matrix.python && matrix.python || 'ANY' }})
     strategy:
       # As soon as the first unit test fails, cancel the others to free up the CI queue
       fail-fast: false
